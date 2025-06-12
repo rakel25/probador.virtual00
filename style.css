@@ -4,6 +4,7 @@ body {
   font-family: 'Arial', sans-serif;
   background-color: #000;
   color: white;
+  user-select: none;
 }
 
 #splash-screen {
@@ -15,6 +16,7 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 999;
+  text-align: center;
 }
 
 #splash-title {
@@ -38,53 +40,43 @@ body {
   color: white;
   border: 2px solid silver;
   border-radius: 10px;
+  transition: background-color 0.3s;
+}
+
+#enter-btn:hover {
+  background-color: #555;
 }
 
 #fitting-room {
   position: relative;
   width: 100vw;
   height: 100vh;
+  background-color: black;
 }
 
-#carousel {
+/* Botón cambiar cámara */
+#toggle-camera-btn {
   position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-#carousel button {
-  background-color: transparent;
-  border: none;
-  font-size: 2rem;
-  color: white;
-  cursor: pointer;
-}
-
-.prenda {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.prenda img {
-  height: 80px;
-}
-
-#clothing-name {
-  font-size: 1.2rem;
+  top: 15px;
+  right: 15px;
+  z-index: 20;
+  background-color: rgba(0,0,0,0.6);
+  border: 1.5px solid silver;
+  border-radius: 8px;
+  padding: 8px 12px;
   color: silver;
-  text-shadow: 1px 1px 4px #888;
+  cursor: pointer;
+  font-size: 14px;
 }
 
+#toggle-camera-btn:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+
+/* Video y canvases */
 video, canvas {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   width: 100vw;
   height: 100vh;
   object-fit: cover;
@@ -97,4 +89,46 @@ video, canvas {
 #overlay-canvas {
   z-index: 2;
   pointer-events: none;
+}
+
+/* Botones de navegación prendas */
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0,0,0,0.4);
+  border: none;
+  color: white;
+  font-size: 2.5rem;
+  cursor: pointer;
+  z-index: 10;
+  user-select: none;
+  padding: 10px 20px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.nav-btn:hover {
+  background-color: rgba(255,255,255,0.2);
+}
+
+.nav-btn.left {
+  left: 10px;
+}
+
+.nav-btn.right {
+  right: 10px;
+}
+
+/* Nombre de la prenda debajo, centrado */
+#clothing-name {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+  font-size: 2rem;
+  color: silver;
+  text-shadow: 2px 2px 8px #aaa;
+  font-weight: bold;
+  user-select: none;
 }
