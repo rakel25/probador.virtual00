@@ -1,43 +1,81 @@
 function onResults(results) {
-  videoCtx.clearRect(0, 0, videoCanvas.width, videoCanvas.height);
-  videoCtx.drawImage(results.image, 0, 0, videoCanvas.width, videoCanvas.height);
   overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
   if (!results.poseLandmarks) return;
 
-  const landmarks = results.poseLandmarks;
+  // Coordenadas claves de los landmarks
+  const ls = results.poseLandmarks[11]; // hombro izquierdo
+  const rs = results.poseLandmarks[12]; // hombro derecho
+  const lh = results.poseLandmarks[23]; // cadera izquierda
+  const rh = results.poseLandmarks[24]; // cadera derecha
+  const nose = results.poseLandmarks[0]; // nariz, para la cara
 
-  const leftShoulder = landmarks[11];
-  const rightShoulder = landmarks[12];
-  const leftHip = landmarks[23];
-  const rightHip = landmarks[24];
+  // Dimensiones canvas
+  const w = overlayCanvas.width;
+  const h = overlayCanvas.height;
 
-  const centerX = ((leftShoulder.x + rightShoulder.x) / 2) * overlayCanvas.width;
-  const shouldersY = ((leftShoulder.y + rightShoulder.y) / 2) * overlayCanvas.height;
-  const hipsY = ((leftHip.y + rightHip.y) / 2) * overlayCanvas.height;
+  if(usingFrontCamera) {
+    // --- Parte superior: dibujar solo la cara ---
+    // Definimos rectángulo cara (por ejemplo, del centro nariz hacia arriba y algo de ancho)
+    const faceCenterX = nose.x * w;
+    const faceCenterY = nose.y * h;
+    const faceWidth = (Math.abs(ls.x - rs.x) * w) * 1.2;
+    const faceHeight = faceWidth * 1.2;
 
-  const shoulderWidth = Math.abs(leftShoulder.x - rightShoulder.x) * overlayCanvas.width;
-  const torsoHeight = Math.abs(hipsY - shouldersY);
+    // Calculamos el área del video a recortar (cara)
+    const sx = Math.max(0, faceCenterX - faceWidth / 2);
+    const sy = Math.max(0, faceCenterY - faceHeight * 0.8); // un poco más arriba para cubrir frente
+    const sWidth = Math.min(w - sx, faceWidth);
+    const sHeight = Math.min(h - sy, faceHeight);
 
-  const imgWidth = shoulderWidth * 1.8;
-  const imgHeight = torsoHeight * 1.8;
+    // Dibujamos solo la cara recortada en la parte superior del canvas
+    overlayCtx.drawImage(
+      results.image,
+      sx, sy, sWidth, sHeight, // parte origen del video
+      0, 0, w, h / 2 // parte destino canvas (mitad superior)
+    );
 
-  let drawY;
+    // --- Parte inferior: dibujar la prenda ---
+    const centerX = ((ls.x + rs.x) / 2) * w;
+    const neckY = ((ls.y + rs.y) / 2) * h;
+    const torsoHeight = (((lh.y + rh.y) / 2) - ((ls.y + rs.y) / 2)) * h;
+    const shoulderWidth = Math.abs(ls.x - rs.x) * w;
 
-  if (usingFrontCamera) {
-    // En cámara frontal: ajustar para que empiece justo debajo de la barbilla
-    const neckY = landmarks[0].y * overlayCanvas.height + 40; // Punto de la nariz + desplazamiento
-    drawY = neckY;
+    const imgWidth = shoulderWidth * 1.8;
+    const imgHeight = torsoHeight * 1.8;
+
+    // Dibujamos la prenda en la mitad inferior del canvas (desde mitad canvas hacia abajo)
+    // Ajustamos la Y para que esté dentro de la mitad inferior
+    const destX = centerX - imgWidth / 2;
+    const destY = h / 2 + (neckY - h / 2);
+
+    overlayCtx.drawImage(
+      clothingImg,
+      destX,
+      destY,
+      imgWidth,
+      imgHeight
+    );
+
   } else {
-    // En cámara trasera: mantener como estaba
-    drawY = shouldersY - imgHeight / 3;
-  }
+    // Cámara trasera: pantalla completa, prenda normal
+    videoCtx.clearRect(0, 0, videoCanvas.width, videoCanvas.height);
+    videoCtx.drawImage(results.image, 0, 0, videoCanvas.width, videoCanvas.height);
 
-  overlayCtx.drawImage(
-    clothingImg,
-    centerX - imgWidth / 2,
-    drawY,
-    imgWidth,
-    imgHeight
-  );
+    const centerX = ((ls.x + rs.x) / 2) * w;
+    const neckY = ((ls.y + rs.y) / 2) * h;
+    const torsoHeight = (((lh.y + rh.y) / 2) - ((ls.y + rs.y) / 2)) * h;
+    const shoulderWidth = Math.abs(ls.x - rs.x) * w;
+
+    const imgWidth = shoulderWidth * 1.8;
+    const imgHeight = torsoHeight * 1.8;
+
+    overlayCtx.drawImage(
+      clothingImg,
+      centerX - imgWidth / 2,
+      neckY - imgHeight / 3,
+      imgWidth,
+      imgHeight
+    );
+  }
 }
