@@ -1,8 +1,9 @@
 body {
   margin: 0;
   overflow: hidden;
-  font-family: Arial, sans-serif;
+  font-family: 'Arial', sans-serif;
   background-color: #000;
+  color: white;
 }
 
 #splash-screen {
@@ -16,6 +17,14 @@ body {
   z-index: 999;
 }
 
+#splash-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: silver;
+  text-shadow: 2px 2px 5px #aaa, 0 0 10px white;
+  margin-bottom: 20px;
+}
+
 #splash-logo {
   width: 250px;
   margin-bottom: 20px;
@@ -25,14 +34,51 @@ body {
   padding: 10px 20px;
   font-size: 18px;
   cursor: pointer;
+  background-color: #333;
+  color: white;
+  border: 2px solid silver;
+  border-radius: 10px;
 }
 
-#clothing-selector {
+#fitting-room {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+#carousel {
   position: absolute;
   top: 10px;
-  left: 10px;
-  z-index: 20;
-  font-size: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+#carousel button {
+  background-color: transparent;
+  border: none;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+}
+
+.prenda {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.prenda img {
+  height: 80px;
+}
+
+#clothing-name {
+  font-size: 1.2rem;
+  color: silver;
+  text-shadow: 1px 1px 4px #888;
 }
 
 video, canvas {
