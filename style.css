@@ -1,18 +1,54 @@
 body {
-  text-align: center;
-  font-family: sans-serif;
+  margin: 0;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  background-color: #000;
 }
-#video, #canvas {
-  width: 640px;
-  height: 480px;
-  border: 1px solid #ccc;
-  margin-top: 10px;
+
+#splash-screen {
+  position: fixed;
+  inset: 0;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
 }
-#controls {
-  margin-top: 10px;
+
+#splash-logo {
+  width: 250px;
+  margin-bottom: 20px;
 }
-button {
-  margin: 5px;
-  padding: 10px 15px;
+
+#enter-btn {
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+#clothing-selector {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 20;
   font-size: 16px;
+}
+
+video, canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+}
+
+#video-canvas {
+  z-index: 1;
+}
+
+#overlay-canvas {
+  z-index: 2;
+  pointer-events: none;
 }
