@@ -1,75 +1,128 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>Virtual Dressroom</title>
-  <style>
-    body, html {
-      margin: 0; padding: 0; height: 100%;
-      background: #121212; color: silver;
-      font-family: 'Arial Black', Gadget, sans-serif;
-      display: flex; justify-content: center; align-items: center;
-    }
-    #splash {
-      text-align: center; cursor: pointer;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      width:100vw; height:100vh; user-select: none;
-    }
-    #splash-logo {
-      width: 280px; max-width: 90vw; margin-bottom:10px;
-      filter: drop-shadow(0 0 10px silver);
-    }
-    #splash-text {
-      font-size: 2.2rem; color: silver;
-      text-shadow:
-        0 0 5px #fff,
-        0 0 10px #ccc,
-        0 0 20px #999,
-        2px 2px 10px #aaa,
-        4px 4px 20px #888;
-      font-weight: bold; white-space: nowrap; margin-top:10px;
-    }
-    #probador {
-      display:none; position:relative; width:100vw; height:100vh; background:#222; overflow:hidden;
-    }
-    canvas {
-      display:block; position:absolute; top:0; left:0;
-      width:100vw; height:100vh; object-fit:cover;
-    }
-    #clothing-info {
-      position:absolute; bottom:80px; left:50%;
-      transform:translateX(-50%); background:rgba(0,0,0,0.8);
-      padding:12px 20px; border-radius:10px; color:silver;
-      font-size:1.6rem; font-weight:700; text-align:center;
-      box-shadow:0 0 15px silver; user-select:none; display:none; z-index:20;
-      max-width:90vw;
-    }
-    #prev-btn, #next-btn {
-      position:absolute; top:50%; transform:translateY(-50%);
-      background:transparent; border:2px solid silver; color:silver;
-      font-size:1.8rem; padding:15px 20px; cursor:pointer;
-      box-shadow:0 0 10px silver; user-select:none;
-      transition:background .3s, color .3s; z-index:10;
-    }
-    #prev-btn { left:10px; }
-    #next-btn { right:10px; }
-    #camera-toggle {
-      position:absolute; top:15px; right:15px; z-index:10;
-      background:transparent; border:2px solid silver; color:silver;
-      font-size:1.2rem; padding:8px 12px; cursor:pointer;
-      box-shadow:0 0 10px silver; user-select:none;
-      transition:background .3s, color .3s;
-    }
-    #prev-btn:hover, #next-btn:hover, #camera-toggle:hover {
-      background:silver; color:#121212;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Virtual Dressroom</title>
+<style>
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    background: #121212;
+    color: silver;
+    font-family: 'Arial Black', Gadget, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #splash {
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    padding: 20px;
+    user-select: none;
+  }
+  #splash-logo {
+    width: 300px;
+    max-width: 90vw;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 10px silver);
+  }
+  #splash-text {
+    font-size: 2.5rem;
+    color: silver;
+    text-shadow:
+      2px 2px 0 #000,
+      4px 4px 0 #555,
+      6px 6px 10px silver;
+    font-weight: 900;
+    white-space: nowrap;
+  }
+  #probador {
+    display: none;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: #222;
+    overflow: hidden;
+  }
+  canvas {
+    display: block;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+  }
+  #clothing-info {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    padding: 12px 20px;
+    border-radius: 10px;
+    color: silver;
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-align: center;
+    box-shadow: 0 0 15px silver;
+    user-select: none;
+    display: none;
+    z-index: 20;
+    max-width: 90vw;
+  }
+  #prev-btn, #next-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: 2px solid silver;
+    color: silver;
+    font-size: 1.8rem;
+    padding: 15px 20px;
+    cursor: pointer;
+    box-shadow: 0 0 10px silver;
+    user-select: none;
+    transition: background 0.3s, color 0.3s;
+    z-index: 10;
+  }
+  #prev-btn:hover, #next-btn:hover {
+    background: silver;
+    color: #121212;
+  }
+  #prev-btn { left: 10px; }
+  #next-btn { right: 10px; }
+  #camera-toggle {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background: transparent;
+    border: 2px solid silver;
+    color: silver;
+    font-size: 1.2rem;
+    padding: 8px 12px;
+    cursor: pointer;
+    box-shadow: 0 0 10px silver;
+    user-select: none;
+    transition: background 0.3s, color 0.3s;
+  }
+  #camera-toggle:hover {
+    background: silver;
+    color: #121212;
+  }
+</style>
 </head>
 <body>
 
 <div id="splash">
-  <img src="logo.png" id="splash-logo" alt="Logo"/>
+  <img src="logo.png" alt="Logo" id="splash-logo" />
   <div id="splash-text">Virtual TRY-ON</div>
 </div>
 
@@ -78,7 +131,7 @@
   <div id="clothing-info"></div>
   <button id="prev-btn">⬅</button>
   <button id="next-btn">➡</button>
-  <button id="camera-toggle">Cambiar cámara</button>
+  <button id="camera-toggle">Usar cámara trasera</button>
 </div>
 
 <script>
@@ -86,104 +139,132 @@
   const probador = document.getElementById('probador');
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
-  const infoBox = document.getElementById('clothing-info');
+  const clothingInfo = document.getElementById('clothing-info');
   const prevBtn = document.getElementById('prev-btn');
   const nextBtn = document.getElementById('next-btn');
-  const toggleCam = document.getElementById('camera-toggle');
+  const cameraToggle = document.getElementById('camera-toggle');
+
+  let videoStream;
+  let usingFrontCamera = true;
+  let videoElement;
 
   const clothes = [
-    { src: 'jacket1.png', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
-    { src: 'moria1.png', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
-    { src: 'nusa1.png', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
-    { src: 'peixe1.png', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' }
+    { src: 'clothes/jacket1.png', name: 'Jacket 1', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
+    { src: 'clothes/moria1.png', name: 'Moria 1', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
+    { src: 'clothes/nusa1.png', name: 'Nusa 1', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
+    { src: 'clothes/peixe1.png', name: 'Peixe 1', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' }
   ];
+  let currentIndex = 0;
 
-  let preload = [], loadedCount = 0;
-  clothes.forEach((c,i) => {
-    preload[i] = new Image();
-    preload[i].src = c.src;
-    preload[i].onload = () => {
-      loadedCount++;
-      if (loadedCount === clothes.length) console.log('Prendas cargadas ✅');
-    }
-    preload[i].onerror = () => { alert('Error cargando ' + c.src); }
-  });
+  videoElement = document.createElement('video');
+  videoElement.autoplay = true;
+  videoElement.playsInline = true;
+  videoElement.muted = true;
 
-  let videoStream, usingFront = true;
-  const video = document.createElement('video');
-  video.autoplay = video.playsInline = video.muted = true;
-
-  let canvasRect;
-  let current = 0;
-
-  function resize() {
+  function setCanvasSize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
   }
-  window.addEventListener('resize', resize);
-  resize();
+  setCanvasSize();
+  window.addEventListener('resize', () => {
+    setCanvasSize();
+  });
 
-  function startCam(front = true) {
-    if (videoStream) videoStream.getTracks().forEach(t => t.stop());
-    navigator.mediaDevices.getUserMedia({
-      video: { facingMode: front? 'user' : 'environment', width:1280, height:720 },
-      audio:false
-    })
-      .then(s => {
-        videoStream = s;
-        video.srcObject = s;
-        usingFront = front;
+  function startCamera(front = true) {
+    if (videoStream) {
+      videoStream.getTracks().forEach(track => track.stop());
+    }
+    const constraints = {
+      video: { facingMode: front ? 'user' : 'environment', width: 1280, height: 720 },
+      audio: false
+    };
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then(stream => {
+        videoStream = stream;
+        videoElement.srcObject = stream;
+        usingFrontCamera = front;
       })
-      .catch(e => alert('No es posible acceder a la cámara: ' + e.message));
+      .catch(err => alert('No se pudo acceder a la cámara: ' + err.message));
   }
 
-  function render() {
-    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+  let clothingRect = null;
+
+  function draw() {
+    if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+      setCanvasSize();
+
       ctx.save();
-      if (usingFront) {
-        ctx.translate(canvas.width,0);
-        ctx.scale(-1,1);
+      if (usingFrontCamera) {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
       }
 
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
-      const img = preload[current];
-      const top = canvas.height * 0.3;
-      const he = canvas.height * 0.7 - top;
-      const wi = he * (img.width / img.height);
-      const x = (canvas.width - wi) / 2;
-      ctx.drawImage(img, x, top, wi, he);
-      canvasRect = { x, y: top, w: wi, h: he };
+      const img = new Image();
+      img.src = clothes[currentIndex].src;
+
+      img.onload = () => {
+        const torsoTop = canvas.height * 0.3;
+        const torsoBottom = canvas.height * 0.7;
+        const torsoHeight = torsoBottom - torsoTop;
+        const torsoWidth = torsoHeight * (img.width / img.height);
+        const x = (canvas.width - torsoWidth) / 2;
+        const y = torsoTop;
+
+        ctx.drawImage(img, x, y, torsoWidth, torsoHeight);
+        clothingRect = { x, y, width: torsoWidth, height: torsoHeight };
+      }
 
       ctx.restore();
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
-    requestAnimationFrame(render);
+    requestAnimationFrame(draw);
+  }
+
+  prevBtn.onclick = () => {
+    currentIndex = (currentIndex - 1 + clothes.length) % clothes.length;
+    clothingInfo.style.display = 'none';
+  }
+  nextBtn.onclick = () => {
+    currentIndex = (currentIndex + 1) % clothes.length;
+    clothingInfo.style.display = 'none';
+  }
+
+  cameraToggle.onclick = () => {
+    startCamera(!usingFrontCamera);
   }
 
   splash.onclick = () => {
     splash.style.display = 'none';
     probador.style.display = 'block';
-    startCam(true);
-    render();
+    startCamera(true);
+    draw();
   }
 
-  prevBtn.onclick = () => current = (current - 1 + clothes.length) % clothes.length;
-  nextBtn.onclick = () => current = (current + 1) % clothes.length;
+  canvas.addEventListener('click', (e) => {
+    if (!clothingRect) return;
+    let clickX = e.clientX;
+    if (usingFrontCamera) {
+      clickX = canvas.width - clickX;
+    }
+    const clickY = e.clientY;
 
-  toggleCam.onclick = () => startCam(!usingFront);
-
-  canvas.addEventListener('click', e => {
-    if (!canvasRect) return;
-    let x = e.clientX;
-    if (usingFront) x = canvas.width - x;
-    const y = e.clientY;
-    if (x >= canvasRect.x && x <= canvasRect.x + canvasRect.w &&
-        y >= canvasRect.y && y <= canvasRect.y + canvasRect.h) {
-      infoBox.textContent = clothes[current].info;
-      infoBox.style.display = 'block';
-      setTimeout(() => infoBox.style.display = 'none', 5000);
+    if (
+      clickX >= clothingRect.x &&
+      clickX <= clothingRect.x + clothingRect.width &&
+      clickY >= clothingRect.y &&
+      clickY <= clothingRect.y + clothingRect.height
+    ) {
+      clothingInfo.textContent = clothes[currentIndex].info;
+      clothingInfo.style.display = 'block';
+      setTimeout(() => {
+        clothingInfo.style.display = 'none';
+      }, 5000);
     }
   });
 </script>
+
 </body>
 </html>
