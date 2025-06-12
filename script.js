@@ -5,11 +5,42 @@ const fittingRoom = document.getElementById("fitting-room");
 const video = document.getElementById("video");
 const videoCanvas = document.getElementById("video-canvas");
 const overlayCanvas = document.getElementById("overlay-canvas");
-const clothingImg = document.getElementById("clothing-img");
-const selector = document.getElementById("clothing-selector");
-
 const videoCtx = videoCanvas.getContext("2d");
 const overlayCtx = overlayCanvas.getContext("2d");
+
+const clothingImg = document.getElementById("clothing-img");
+const clothingName = document.getElementById("clothing-name");
+
+const prendas = [
+  { name: "Jacket 1", file: "jacket1.png" },
+  { name: "Moria 1", file: "moria1.png" },
+  { name: "Nusa 1", file: "nusa1.png" },
+  { name: "Peixe 1", file: "peixe1.png" }
+];
+
+let currentIndex = 0;
+
+function updatePrenda() {
+  const item = prendas[currentIndex];
+  clothingImg.src = `clothes/${item.file}`;
+  clothingName.textContent = item.name;
+}
+
+document.getElementById("prev-btn").onclick = () => {
+  currentIndex = (currentIndex - 1 + prendas.length) % prendas.length;
+  updatePrenda();
+};
+
+document.getElementById("next-btn").onclick = () => {
+  currentIndex = (currentIndex + 1) % prendas.length;
+  updatePrenda();
+};
+
+enterBtn.onclick = () => {
+  splash.style.display = "none";
+  fittingRoom.style.display = "block";
+  startPose();
+};
 
 function resizeCanvases() {
   videoCanvas.width = window.innerWidth;
@@ -19,16 +50,6 @@ function resizeCanvases() {
 }
 resizeCanvases();
 window.addEventListener('resize', resizeCanvases);
-
-selector.addEventListener('change', () => {
-  clothingImg.src = `clothes/${selector.value}.png`;
-});
-
-enterBtn.onclick = () => {
-  splash.style.display = "none";
-  fittingRoom.style.display = "block";
-  startPose();
-};
 
 function startPose() {
   const pose = new Pose({
@@ -85,3 +106,5 @@ function onResults(results) {
     imgHeight
   );
 }
+
+updatePrenda(); // Inicializa
