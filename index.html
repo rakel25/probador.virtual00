@@ -58,19 +58,23 @@
     height: 100vh;
     object-fit: cover;
   }
-  #clothing-name {
+  #clothing-info {
     position: absolute;
-    color: silver;
     bottom: 80px;
-    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    padding: 12px 20px;
+    border-radius: 10px;
+    color: silver;
+    font-size: 1.6rem;
+    font-weight: 700;
     text-align: center;
-    font-size: 1.8rem;
-    text-shadow:
-      1px 1px 0 #000,
-      2px 2px 0 #555,
-      3px 3px 6px silver;
+    box-shadow: 0 0 15px silver;
     user-select: none;
-    z-index: 10;
+    display: none;
+    z-index: 20;
+    max-width: 90vw;
   }
   #prev-btn, #next-btn {
     position: absolute;
@@ -123,7 +127,7 @@
 
 <div id="probador">
   <canvas id="canvas"></canvas>
-  <div id="clothing-name"></div>
+  <div id="clothing-info"></div>
   <button id="prev-btn">⬅</button>
   <button id="next-btn">➡</button>
   <button id="camera-toggle">Cambiar cámara</button>
@@ -134,26 +138,23 @@
   const probador = document.getElementById('probador');
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
-  const clothingName = document.getElementById('clothing-name');
+  const clothingInfo = document.getElementById('clothing-info');
   const prevBtn = document.getElementById('prev-btn');
   const nextBtn = document.getElementById('next-btn');
   const cameraToggle = document.getElementById('camera-toggle');
 
   let videoStream;
-  let videoTrack;
-  let videoElement;
   let usingFrontCamera = true;
+  let videoElement;
 
-  // Lista de prendas
   const clothes = [
-    { src: 'clothes/jacket1.png', name: 'Jacket 1' },
-    { src: 'clothes/moria1.png', name: 'Moria 1' },
-    { src: 'clothes/nusa1.png', name: 'Nusa 1' },
-    { src: 'clothes/peixe1.png', name: 'Peixe 1' }
+    { src: 'clothes/jacket1.png', name: 'Jacket 1', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
+    { src: 'clothes/moria1.png', name: 'Moria 1', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
+    { src: 'clothes/nusa1.png', name: 'Nusa 1', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
+    { src: 'clothes/peixe1.png', name: 'Peixe 1', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' }
   ];
   let currentIndex = 0;
 
-  // Crear video oculto para capturar cámara
   videoElement = document.createElement('video');
   videoElement.autoplay = true;
   videoElement.playsInline = true;
@@ -179,72 +180,58 @@
     navigator.mediaDevices.getUserMedia(constraints)
       .then(stream => {
         videoStream = stream;
-        videoTrack = stream.getVideoTracks()[0];
         videoElement.srcObject = stream;
         usingFrontCamera = front;
       })
       .catch(err => alert('No se pudo acceder a la cámara: ' + err.message));
   }
 
-  // Dibuja video + prenda
+  let clothingRect = null; // Para detectar click sobre la prenda
+
   function draw() {
     if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
-      // Ajustar tamaño del canvas según ventana
       setCanvasSize();
 
-      // Espejo si es cámara frontal
       ctx.save();
       if (usingFrontCamera) {
         ctx.translate(canvas.width, 0);
         ctx.scale(-1, 1);
       }
 
-      // Dibuja video (imagen espejo si cámara frontal)
       ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
-      // Dibuja prenda encima (ajustada a torso)
       const img = new Image();
       img.src = clothes[currentIndex].src;
 
       img.onload = () => {
-        // Posicionamos la prenda: 
-        // calculamos rectángulo torso (aprox 30%-70% vertical canvas)
         const torsoTop = canvas.height * 0.3;
         const torsoBottom = canvas.height * 0.7;
         const torsoHeight = torsoBottom - torsoTop;
-        const torsoWidth = torsoHeight * (img.width / img.height); // mantener proporción
-
-        // Centrar horizontalmente
+        const torsoWidth = torsoHeight * (img.width / img.height);
         const x = (canvas.width - torsoWidth) / 2;
         const y = torsoTop;
 
         ctx.drawImage(img, x, y, torsoWidth, torsoHeight);
 
-        ctx.restore();
-
-        // Actualizamos nombre
-        clothingName.style.bottom = (canvas.height - torsoTop) + 10 + 'px'; // justo debajo torso
-        clothingName.textContent = clothes[currentIndex].name;
+        // Guardamos la posición y tamaño para detección click
+        clothingRect = { x, y, width: torsoWidth, height: torsoHeight };
       }
+
+      ctx.restore();
     } else {
-      // No video listo, limpiar canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
-
-    // Loop para animar
     requestAnimationFrame(draw);
   }
 
   // Cambiar prenda
-  function showClothing(index) {
-    currentIndex = index;
-  }
-
   prevBtn.onclick = () => {
     currentIndex = (currentIndex - 1 + clothes.length) % clothes.length;
+    clothingInfo.style.display = 'none';
   }
   nextBtn.onclick = () => {
     currentIndex = (currentIndex + 1) % clothes.length;
+    clothingInfo.style.display = 'none';
   }
 
   cameraToggle.onclick = () => {
@@ -257,6 +244,33 @@
     startCamera(true);
     draw();
   }
+
+  // Mostrar info cuando se hace clic en la prenda
+  canvas.addEventListener('click', (e) => {
+    if (!clothingRect) return;
+    // Obtener posición clic
+    let clickX = e.clientX;
+    if (usingFrontCamera) {
+      // El video está espejado horizontalmente, ajustar clickX
+      clickX = canvas.width - clickX;
+    }
+    const clickY = e.clientY;
+
+    if (
+      clickX >= clothingRect.x &&
+      clickX <= clothingRect.x + clothingRect.width &&
+      clickY >= clothingRect.y &&
+      clickY <= clothingRect.y + clothingRect.height
+    ) {
+      // Mostrar info
+      clothingInfo.textContent = clothes[currentIndex].info;
+      clothingInfo.style.display = 'block';
+      // Ocultar info después de 5 segundos
+      setTimeout(() => {
+        clothingInfo.style.display = 'none';
+      }, 5000);
+    }
+  });
 </script>
 
 </body>
