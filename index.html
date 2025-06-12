@@ -9,12 +9,14 @@
     margin: 0; padding: 0; height: 100%;
     background: #121212;
     color: silver;
-    font-family: 'Arial Black', Gadget, sans-serif;
+    font-family: Helvetica, Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
   }
+
   #splash {
+    background-color: #c7f464; /* verde pistacho */
     text-align: center;
     cursor: pointer;
     display: flex;
@@ -26,22 +28,20 @@
     padding: 20px;
     user-select: none;
   }
+
   #splash-logo {
-    width: 300px;
+    width: 350px;
     max-width: 90vw;
-    margin-bottom: 10px;
-    filter: drop-shadow(0 0 10px silver);
+    margin-bottom: 20px;
   }
+
   #splash-text {
-    font-size: 2.5rem;
-    color: silver;
-    text-shadow:
-      2px 2px 0 #000,
-      4px 4px 0 #555,
-      6px 6px 10px silver;
-    font-weight: 900;
-    white-space: nowrap;
+    font-size: 2.8rem;
+    color: #000000;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
   }
+
   #probador {
     display: none;
     position: relative;
@@ -50,6 +50,7 @@
     background: #222;
     overflow: hidden;
   }
+
   canvas {
     display: block;
     position: absolute;
@@ -58,6 +59,7 @@
     height: 100vh;
     object-fit: cover;
   }
+
   #clothing-info {
     position: absolute;
     bottom: 80px;
@@ -76,6 +78,7 @@
     z-index: 20;
     max-width: 90vw;
   }
+
   #prev-btn, #next-btn {
     position: absolute;
     top: 50%;
@@ -91,12 +94,15 @@
     transition: background 0.3s, color 0.3s;
     z-index: 10;
   }
+
   #prev-btn:hover, #next-btn:hover {
     background: silver;
     color: #121212;
   }
+
   #prev-btn { left: 10px; }
   #next-btn { right: 10px; }
+
   #camera-toggle {
     position: absolute;
     bottom: 15px;
@@ -113,6 +119,7 @@
     user-select: none;
     transition: background 0.3s, color 0.3s;
   }
+
   #camera-toggle:hover {
     background: silver;
     color: #121212;
@@ -131,7 +138,7 @@
   <div id="clothing-info"></div>
   <button id="prev-btn">⬅</button>
   <button id="next-btn">➡</button>
-  <button id="camera-toggle">Usar cámara trasera</button>
+  <button id="camera-toggle">Cambiar cámara</button>
 </div>
 
 <script>
@@ -146,29 +153,27 @@
 
   let videoStream;
   let usingFrontCamera = true;
-  let videoElement;
-
-  const clothes = [
-    { src: 'clothes/jacket1.png', name: 'Jacket 1', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
-    { src: 'clothes/moria1.png', name: 'Moria 1', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
-    { src: 'clothes/nusa1.png', name: 'Nusa 1', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
-    { src: 'clothes/peixe1.png', name: 'Peixe 1', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' }
-  ];
-  let currentIndex = 0;
-
-  videoElement = document.createElement('video');
+  let videoElement = document.createElement('video');
   videoElement.autoplay = true;
   videoElement.playsInline = true;
   videoElement.muted = true;
+
+  const clothes = [
+    { src: 'clothes/jacket1.png', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
+    { src: 'clothes/moria1.png', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
+    { src: 'clothes/nusa1.png', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' },
+    { src: 'clothes/peixe1.png', info: 'Material: 100% Algodón\nLavable bajo 40º grados.' }
+  ];
+  let currentIndex = 0;
+  let clothingRect = null;
+  let clothingImage = new Image();
 
   function setCanvasSize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
   }
   setCanvasSize();
-  window.addEventListener('resize', () => {
-    setCanvasSize();
-  });
+  window.addEventListener('resize', setCanvasSize);
 
   function startCamera(front = true) {
     if (videoStream) {
@@ -187,13 +192,12 @@
       .catch(err => alert('No se pudo acceder a la cámara: ' + err.message));
   }
 
-  let clothingRect = null;
-
   function draw() {
+    requestAnimationFrame(draw);
     if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
-      setCanvasSize();
-
       ctx.save();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       if (usingFrontCamera) {
         ctx.translate(canvas.width, 0);
         ctx.scale(-1, 1);
@@ -201,35 +205,35 @@
 
       ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
-      const img = new Image();
-      img.src = clothes[currentIndex].src;
-
-      img.onload = () => {
+      if (clothingImage.complete && clothingImage.naturalWidth !== 0) {
         const torsoTop = canvas.height * 0.3;
         const torsoBottom = canvas.height * 0.7;
         const torsoHeight = torsoBottom - torsoTop;
-        const torsoWidth = torsoHeight * (img.width / img.height);
+        const torsoWidth = torsoHeight * (clothingImage.width / clothingImage.height);
         const x = (canvas.width - torsoWidth) / 2;
         const y = torsoTop;
 
-        ctx.drawImage(img, x, y, torsoWidth, torsoHeight);
+        ctx.drawImage(clothingImage, x, y, torsoWidth, torsoHeight);
         clothingRect = { x, y, width: torsoWidth, height: torsoHeight };
       }
 
       ctx.restore();
-    } else {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
-    requestAnimationFrame(draw);
+  }
+
+  function loadClothing(index) {
+    clothingImage.src = clothes[index].src;
+    clothingInfo.style.display = 'none';
   }
 
   prevBtn.onclick = () => {
     currentIndex = (currentIndex - 1 + clothes.length) % clothes.length;
-    clothingInfo.style.display = 'none';
+    loadClothing(currentIndex);
   }
+
   nextBtn.onclick = () => {
     currentIndex = (currentIndex + 1) % clothes.length;
-    clothingInfo.style.display = 'none';
+    loadClothing(currentIndex);
   }
 
   cameraToggle.onclick = () => {
@@ -240,6 +244,7 @@
     splash.style.display = 'none';
     probador.style.display = 'block';
     startCamera(true);
+    loadClothing(currentIndex);
     draw();
   }
 
