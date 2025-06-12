@@ -5,31 +5,38 @@ function onResults(results) {
 
   if (!results.poseLandmarks) return;
 
-  const ls = results.poseLandmarks[11];
-  const rs = results.poseLandmarks[12];
-  const lh = results.poseLandmarks[23];
-  const rh = results.poseLandmarks[24];
+  const landmarks = results.poseLandmarks;
 
-  const centerX = (ls.x + rs.x) / 2 * overlayCanvas.width;
-  const centerY = (ls.y + rs.y) / 2 * overlayCanvas.height;
-  const shoulderWidth = Math.abs(ls.x - rs.x) * overlayCanvas.width;
-  const torsoHeight = Math.abs(((lh.y + rh.y) / 2 - (ls.y + rs.y) / 2)) * overlayCanvas.height;
+  const leftShoulder = landmarks[11];
+  const rightShoulder = landmarks[12];
+  const leftHip = landmarks[23];
+  const rightHip = landmarks[24];
+
+  const centerX = ((leftShoulder.x + rightShoulder.x) / 2) * overlayCanvas.width;
+  const shouldersY = ((leftShoulder.y + rightShoulder.y) / 2) * overlayCanvas.height;
+  const hipsY = ((leftHip.y + rightHip.y) / 2) * overlayCanvas.height;
+
+  const shoulderWidth = Math.abs(leftShoulder.x - rightShoulder.x) * overlayCanvas.width;
+  const torsoHeight = Math.abs(hipsY - shouldersY);
 
   const imgWidth = shoulderWidth * 1.8;
   const imgHeight = torsoHeight * 1.8;
 
-  // Ajuste diferente si se usa cámara frontal
-  let offsetY;
+  let drawY;
+
   if (usingFrontCamera) {
-    offsetY = imgHeight * 0.25; // Baja la imagen para no tapar la cara
+    // En cámara frontal: ajustar para que empiece justo debajo de la barbilla
+    const neckY = landmarks[0].y * overlayCanvas.height + 40; // Punto de la nariz + desplazamiento
+    drawY = neckY;
   } else {
-    offsetY = imgHeight / 3; // Mantiene como estaba
+    // En cámara trasera: mantener como estaba
+    drawY = shouldersY - imgHeight / 3;
   }
 
   overlayCtx.drawImage(
     clothingImg,
     centerX - imgWidth / 2,
-    centerY - offsetY,
+    drawY,
     imgWidth,
     imgHeight
   );
