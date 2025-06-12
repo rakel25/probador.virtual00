@@ -3,33 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Probador Virtual</title>
+  <title>Virtual Dressroom</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 </head>
 <body>
 
-<!-- Pantalla de bienvenida con logo -->
+<!-- Pantalla de bienvenida -->
 <div id="splash-screen">
+  <h1 id="splash-title">Virtual Dressroom with CasaCor</h1>
   <img src="logo.png" alt="Logo" id="splash-logo">
   <button id="enter-btn">Entrar al probador</button>
 </div>
 
 <!-- Probador Virtual -->
 <div id="fitting-room" style="display: none;">
-  <select id="clothing-selector">
-    <option value="jacket1">Jacket 1</option>
-    <option value="moria1">Moria 1</option>
-    <option value="nusa1">Nusa 1</option>
-    <option value="peixe1">Peixe 1</option>
-  </select>
+  <div id="carousel">
+    <button id="prev-btn">⬅</button>
+    <div class="prenda">
+      <img id="clothing-img" src="clothes/jacket1.png">
+      <p id="clothing-name">Jacket 1</p>
+    </div>
+    <button id="next-btn">➡</button>
+  </div>
 
   <video id="video" playsinline muted autoplay></video>
   <canvas id="video-canvas"></canvas>
   <canvas id="overlay-canvas"></canvas>
-
-  <img id="clothing-img" src="clothes/jacket1.png" style="display: none;">
 </div>
 
 <script src="script.js"></script>
