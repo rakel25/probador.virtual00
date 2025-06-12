@@ -4,38 +4,145 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Virtual Dressroom</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <style>
+    body {
+      background: #121212;
+      color: silver;
+      font-family: 'Arial Black', Gadget, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #splash {
+      text-align: center;
+      cursor: pointer;
+    }
+    #splash-logo {
+      width: 250px;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 5px silver);
+    }
+    #splash-text {
+      font-size: 2.5rem;
+      color: silver;
+      text-shadow:
+        1px 1px 0 #000,
+        2px 2px 0 #555,
+        3px 3px 8px silver;
+      user-select: none;
+    }
+    #probador {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      color: silver;
+      padding: 20px;
+      height: 100vh;
+      background: #222;
+    }
+    #clothing-image {
+      max-width: 400px;
+      max-height: 500px;
+      border: 2px solid silver;
+      margin-bottom: 10px;
+      box-shadow: 0 0 20px silver;
+    }
+    #clothing-name {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      text-shadow:
+        1px 1px 0 #000,
+        2px 2px 0 #555,
+        3px 3px 6px silver;
+    }
+    .nav-button {
+      background: transparent;
+      border: 2px solid silver;
+      color: silver;
+      font-size: 1.5rem;
+      padding: 10px 20px;
+      margin: 0 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px silver;
+      user-select: none;
+      transition: background 0.3s, color 0.3s;
+    }
+    .nav-button:hover {
+      background: silver;
+      color: #121212;
+    }
+    #nav-buttons {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      max-width: 450px;
+    }
+  </style>
 </head>
 <body>
 
-<!-- Pantalla inicial (splash) -->
-<div id="splash-screen">
-  <h1 id="splash-title">Virtual TRY - ON with CasaCor</h1>
-  <img src="logo.png" alt="Logo" id="splash-logo" />
-  <button id="enter-btn">Entrar al probador</button>
-</div>
+  <div id="splash">
+    <img src="logo.png" alt="Logo" id="splash-logo" />
+    <div id="splash-text">VIRTUAL TRY-ON</div>
+  </div>
 
-<!-- Probador Virtual -->
-<div id="fitting-room" style="display: none;">
-  
-  <!-- Botón para cambiar cámara -->
-  <button id="toggle-camera-btn" title="Cambiar cámara">📷 Cambiar cámara</button>
-  
-  <!-- Video y canvases para pose -->
-  <video id="video" playsinline muted autoplay></video>
-  <canvas id="video-canvas"></canvas>
-  <canvas id="overlay-canvas"></canvas>
+  <div id="probador">
+    <img src="" alt="Prenda" id="clothing-image" />
+    <div id="clothing-name"></div>
+    <div id="nav-buttons">
+      <button class="nav-button" id="prev-btn">⬅ Anterior</button>
+      <button class="nav-button" id="next-btn">Siguiente ➡</button>
+    </div>
+  </div>
 
-  <!-- Botones cambiar prenda -->
-  <button id="prev-btn" class="nav-btn left">⬅</button>
-  <button id="next-btn" class="nav-btn right">➡</button>
+  <script>
+    const splash = document.getElementById('splash');
+    const probador = document.getElementById('probador');
+    const clothingImage = document.getElementById('clothing-image');
+    const clothingName = document.getElementById('clothing-name');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
 
-  <!-- Nombre prenda abajo centrado -->
-  <p id="clothing-name"></p>
-</div>
+    // Lista de prendas con ruta relativa y nombre
+    const clothes = [
+      { src: 'clothes/jacket1.png', name: 'Jacket 1' },
+      { src: 'clothes/moria1.png', name: 'Moria 1' },
+      { src: 'clothes/nusa1.png', name: 'Nusa 1' },
+      { src: 'clothes/peixe1.png', name: 'Peixe 1' }
+    ];
 
-<script src="script.js"></script>
+    let currentIndex = 0;
+
+    // Función para mostrar prenda actual
+    function showClothing(index) {
+      const item = clothes[index];
+      clothingImage.src = item.src;
+      clothingName.textContent = item.name;
+    }
+
+    // Mostrar splash al inicio
+    splash.style.display = 'flex';
+    probador.style.display = 'none';
+
+    splash.addEventListener('click', () => {
+      splash.style.display = 'none';
+      probador.style.display = 'flex';
+      showClothing(currentIndex);
+    });
+
+    prevBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + clothes.length) % clothes.length;
+      showClothing(currentIndex);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % clothes.length;
+      showClothing(currentIndex);
+    });
+  </script>
+
 </body>
 </html>
