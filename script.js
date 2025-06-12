@@ -10,33 +10,26 @@ function onResults(results) {
   const rs = results.poseLandmarks[12]; // hombro derecho
   const lh = results.poseLandmarks[23]; // cadera izquierda
   const rh = results.poseLandmarks[24]; // cadera derecha
-  const nose = results.poseLandmarks[0]; // nariz (para cámara frontal)
+  const nose = results.poseLandmarks[0]; // nariz
 
   const centerX = (ls.x + rs.x) / 2 * overlayCanvas.width;
-  const shouldersY = ((ls.y + rs.y) / 2) * overlayCanvas.height;
+  const shoulderY = ((ls.y + rs.y) / 2) * overlayCanvas.height;
   const hipsY = ((lh.y + rh.y) / 2) * overlayCanvas.height;
   const shoulderWidth = Math.abs(ls.x - rs.x) * overlayCanvas.width;
-  const torsoHeight = hipsY - shouldersY;
+  const torsoHeight = hipsY - shoulderY;
 
-  let imgWidth, imgHeight, drawX, drawY;
+  let imgWidth = shoulderWidth * 1.8;
+  let imgHeight = torsoHeight * 1.8;
+  let drawX = centerX - imgWidth / 2;
+  let drawY;
 
   if (usingFrontCamera) {
-    // Ajuste para cámara frontal: más bajo para no tapar cara
-    imgWidth = shoulderWidth * 1.8;
-    imgHeight = torsoHeight * 1.8;
-
-    // Desplazar hacia abajo para no tapar la cara
-    const cuelloY = nose.y * overlayCanvas.height + 30; // 30 píxeles debajo de nariz aprox
-
-    drawX = centerX - imgWidth / 2;
+    // Mover la imagen más abajo para no tapar la cara (empieza desde el cuello)
+    const cuelloY = (ls.y + rs.y) / 2 * overlayCanvas.height + 20; // ajustar este valor si hace falta
     drawY = cuelloY;
-
   } else {
-    // Cámara trasera: mantenemos como estaba
-    imgWidth = shoulderWidth * 1.8;
-    imgHeight = torsoHeight * 1.8;
-    drawX = centerX - imgWidth / 2;
-    drawY = shouldersY - imgHeight / 3;
+    // Cámara trasera: mantener como ya estaba
+    drawY = shoulderY - imgHeight / 3;
   }
 
   overlayCtx.drawImage(clothingImg, drawX, drawY, imgWidth, imgHeight);
