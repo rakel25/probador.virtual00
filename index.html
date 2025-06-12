@@ -8,7 +8,6 @@
   body, html {
     margin: 0; padding: 0; height: 100%;
     background: #121212;
-    color: silver;
     font-family: Helvetica, Arial, sans-serif;
     display: flex;
     justify-content: center;
@@ -16,30 +15,22 @@
   }
 
   #splash {
-    background-color: #c7f464; /* verde pistacho */
+    background-color: #000; /* opcional por si tarda en cargar la imagen */
     text-align: center;
     cursor: pointer;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     width: 100vw;
     height: 100vh;
-    padding: 20px;
-    user-select: none;
+    padding: 0;
+    overflow: hidden;
   }
 
   #splash-logo {
-    width: 350px;
-    max-width: 90vw;
-    margin-bottom: 20px;
-  }
-
-  #splash-text {
-    font-size: 2.8rem;
-    color: #000000;
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   #probador {
@@ -130,7 +121,6 @@
 
 <div id="splash">
   <img src="logo.png" alt="Logo" id="splash-logo" />
-  <div id="splash-text">Virtual TRY-ON</div>
 </div>
 
 <div id="probador">
@@ -180,7 +170,10 @@
       videoStream.getTracks().forEach(track => track.stop());
     }
     const constraints = {
-      video: { facingMode: front ? 'user' : 'environment', width: 1280, height: 720 },
+      video: {
+        facingMode: front ? 'user' : 'environment',
+        width: 1280, height: 720
+      },
       audio: false
     };
     navigator.mediaDevices.getUserMedia(constraints)
@@ -206,8 +199,12 @@
       ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
       if (clothingImage.complete && clothingImage.naturalWidth !== 0) {
-        const torsoTop = canvas.height * 0.3;
-        const torsoBottom = canvas.height * 0.7;
+        const isFront = usingFrontCamera;
+        const topOffset = isFront ? 0.2 : 0.3;
+        const bottomOffset = isFront ? 0.6 : 0.7;
+
+        const torsoTop = canvas.height * topOffset;
+        const torsoBottom = canvas.height * bottomOffset;
         const torsoHeight = torsoBottom - torsoTop;
         const torsoWidth = torsoHeight * (clothingImage.width / clothingImage.height);
         const x = (canvas.width - torsoWidth) / 2;
