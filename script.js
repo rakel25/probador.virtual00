@@ -8,8 +8,9 @@ const overlayCanvas = document.getElementById("overlay-canvas");
 const videoCtx = videoCanvas.getContext("2d");
 const overlayCtx = overlayCanvas.getContext("2d");
 
-const clothingImg = document.getElementById("clothing-img");
 const clothingName = document.getElementById("clothing-name");
+
+const toggleCameraBtn = document.getElementById("toggle-camera-btn");
 
 const prendas = [
   { name: "Jacket 1", file: "jacket1.png" },
@@ -19,13 +20,24 @@ const prendas = [
 ];
 
 let currentIndex = 0;
+let currentStream = null;
+let usingFrontCamera = true;
+let cameraInstance = null;
 
 function updatePrenda() {
   const item = prendas[currentIndex];
-  clothingImg.src = `clothes/${item.file}`;
   clothingName.textContent = item.name;
+
+  // Para que la prenda que se dibuja en el canvas se actualice,
+  // actualizaremos una imagen oculta (no visible en DOM) que usaremos para dibujar la prenda
+  clothingImg.src = `clothes/${item.file}`;
 }
 
+// Imagen oculta para usar en canvas overlay
+const clothingImg = new Image();
+clothingImg.src = `clothes/${prendas[0].file}`;
+
+// Navegación prendas
 document.getElementById("prev-btn").onclick = () => {
   currentIndex = (currentIndex - 1 + prendas.length) % prendas.length;
   updatePrenda();
@@ -34,6 +46,15 @@ document.getElementById("prev-btn").onclick = () => {
 document.getElementById("next-btn").onclick = () => {
   currentIndex = (currentIndex + 1) % prendas.length;
   updatePrenda();
+};
+
+// Cambiar cámara (frontal / trasera)
+toggleCameraBtn.onclick = () => {
+  usingFrontCamera = !usingFrontCamera;
+  if(cameraInstance) {
+    cameraInstance.stop();
+    startPose();
+  }
 };
 
 enterBtn.onclick = () => {
@@ -66,14 +87,30 @@ function startPose() {
 
   pose.onResults(onResults);
 
+  // Configura constraints para frontal o trasera
+  let constraints = {
+    audio: false,
+    video: {
+      width: 640,
+      height: 480,
+      facingMode: usingFrontCamera ? "user" : "environment"
+    }
+  };
+
   const camera = new Camera(video, {
     onFrame: async () => {
       await pose.send({ image: video });
     },
     width: 640,
-    height: 480
+    height: 480,
+    facingMode: constraints.video.facingMode
   });
 
+  if(currentStream){
+    currentStream.getTracks().forEach(track => track.stop());
+  }
+  currentStream = camera;
+  cameraInstance = camera;
   camera.start();
 }
 
@@ -107,4 +144,5 @@ function onResults(results) {
   );
 }
 
-updatePrenda(); // Inicializa
+// Inicializa prenda y nombre
+updatePrenda();
