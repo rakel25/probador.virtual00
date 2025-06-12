@@ -1,35 +1,38 @@
-const videoElement = document.getElementById('video');
-const canvasElement = document.getElementById('canvas');
-const canvasCtx = canvasElement.getContext('2d');
+const splash = document.getElementById("splash-screen");
+const enterBtn = document.getElementById("enter-btn");
+const fittingRoom = document.getElementById("fitting-room");
 
-const camisetas = [
-  new Image(),
-  new Image(),
-  new Image(),
-  new Image()
-];
+const video = document.getElementById("video");
+const videoCanvas = document.getElementById("video-canvas");
+const overlayCanvas = document.getElementById("overlay-canvas");
+const clothingImg = document.getElementById("clothing-img");
+const selector = document.getElementById("clothing-selector");
 
-const nombres = ['azul.png', 'morada.png', 'naranja.png', 'verde.png'];
-let cargadas = 0;
+const videoCtx = videoCanvas.getContext("2d");
+const overlayCtx = overlayCanvas.getContext("2d");
 
-nombres.forEach((nombre, index) => {
-  camisetas[index].src = `camisetas/${nombre}`;
-  camisetas[index].onload = () => {
-    cargadas++;
-    if (cargadas === camisetas.length) {
-      iniciarCamara();
-    }
-  };
+function resizeCanvases() {
+  videoCanvas.width = window.innerWidth;
+  videoCanvas.height = window.innerHeight;
+  overlayCanvas.width = window.innerWidth;
+  overlayCanvas.height = window.innerHeight;
+}
+resizeCanvases();
+window.addEventListener('resize', resizeCanvases);
+
+selector.addEventListener('change', () => {
+  clothingImg.src = `clothes/${selector.value}.png`;
 });
 
-let camisetaActual = 0;
-function cambiarCamiseta(index) {
-  camisetaActual = index;
-}
+enterBtn.onclick = () => {
+  splash.style.display = "none";
+  fittingRoom.style.display = "block";
+  startPose();
+};
 
-function iniciarCamara() {
+function startPose() {
   const pose = new Pose({
-    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+    locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
   });
 
   pose.setOptions({
@@ -42,9 +45,9 @@ function iniciarCamara() {
 
   pose.onResults(onResults);
 
-  const camera = new Camera(videoElement, {
+  const camera = new Camera(video, {
     onFrame: async () => {
-      await pose.send({ image: videoElement });
+      await pose.send({ image: video });
     },
     width: 640,
     height: 480
@@ -54,26 +57,31 @@ function iniciarCamara() {
 }
 
 function onResults(results) {
-  canvasElement.width = videoElement.videoWidth;
-  canvasElement.height = videoElement.videoHeight;
+  videoCtx.clearRect(0, 0, videoCanvas.width, videoCanvas.height);
+  videoCtx.drawImage(results.image, 0, 0, videoCanvas.width, videoCanvas.height);
 
-  canvasCtx.save();
-  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-  canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+  overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
-  if (results.poseLandmarks) {
-    const leftShoulder = results.poseLandmarks[11];
-    const rightShoulder = results.poseLandmarks[12];
+  if (!results.poseLandmarks) return;
 
-    if (leftShoulder && rightShoulder) {
-      const x = leftShoulder.x * canvasElement.width;
-      const y = leftShoulder.y * canvasElement.height;
-      const width = (rightShoulder.x - leftShoulder.x) * canvasElement.width;
-      const height = width * 1.2;
+  const ls = results.poseLandmarks[11];
+  const rs = results.poseLandmarks[12];
+  const lh = results.poseLandmarks[23];
+  const rh = results.poseLandmarks[24];
 
-      canvasCtx.drawImage(camisetas[camisetaActual], x, y, width, height);
-    }
-  }
+  const centerX = (ls.x + rs.x) / 2 * overlayCanvas.width;
+  const centerY = (ls.y + rs.y) / 2 * overlayCanvas.height;
+  const shoulderWidth = Math.abs(ls.x - rs.x) * overlayCanvas.width;
+  const torsoHeight = Math.abs(((lh.y + rh.y) / 2 - (ls.y + rs.y) / 2)) * overlayCanvas.height;
 
-  canvasCtx.restore();
+  const imgWidth = shoulderWidth * 1.8;
+  const imgHeight = torsoHeight * 1.8;
+
+  overlayCtx.drawImage(
+    clothingImg,
+    centerX - imgWidth / 2,
+    centerY - imgHeight / 3,
+    imgWidth,
+    imgHeight
+  );
 }
