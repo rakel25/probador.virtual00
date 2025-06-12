@@ -10,27 +10,30 @@
 </head>
 <body>
 
-<!-- Pantalla de bienvenida -->
+<!-- Pantalla inicial (splash) -->
 <div id="splash-screen">
-  <h1 id="splash-title">Virtual Dressroom with CasaCor</h1>
-  <img src="logo.png" alt="Logo" id="splash-logo">
+  <h1 id="splash-title">Virtual TRY - ON with CasaCor</h1>
+  <img src="logo.png" alt="Logo" id="splash-logo" />
   <button id="enter-btn">Entrar al probador</button>
 </div>
 
 <!-- Probador Virtual -->
 <div id="fitting-room" style="display: none;">
-  <div id="carousel">
-    <button id="prev-btn">⬅</button>
-    <div class="prenda">
-      <img id="clothing-img" src="clothes/jacket1.png">
-      <p id="clothing-name">Jacket 1</p>
-    </div>
-    <button id="next-btn">➡</button>
-  </div>
-
+  
+  <!-- Botón para cambiar cámara -->
+  <button id="toggle-camera-btn" title="Cambiar cámara">📷 Cambiar cámara</button>
+  
+  <!-- Video y canvases para pose -->
   <video id="video" playsinline muted autoplay></video>
   <canvas id="video-canvas"></canvas>
   <canvas id="overlay-canvas"></canvas>
+
+  <!-- Botones cambiar prenda -->
+  <button id="prev-btn" class="nav-btn left">⬅</button>
+  <button id="next-btn" class="nav-btn right">➡</button>
+
+  <!-- Nombre prenda abajo centrado -->
+  <p id="clothing-name"></p>
 </div>
 
 <script src="script.js"></script>
