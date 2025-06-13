@@ -6,10 +6,10 @@ function onResults(results) {
 
   if (!results.poseLandmarks) return;
 
-  const ls = results.poseLandmarks[11]; // hombro izq
-  const rs = results.poseLandmarks[12]; // hombro der
-  const lh = results.poseLandmarks[23]; // cadera izq
-  const rh = results.poseLandmarks[24]; // cadera der
+  const ls = results.poseLandmarks[11];
+  const rs = results.poseLandmarks[12];
+  const lh = results.poseLandmarks[23];
+  const rh = results.poseLandmarks[24];
 
   const centerX = (ls.x + rs.x) / 2 * overlayCanvas.width;
   const shoulderWidth = Math.abs(ls.x - rs.x) * overlayCanvas.width;
@@ -22,10 +22,9 @@ function onResults(results) {
   let drawY;
 
   if (usingFrontCamera) {
-    // 📌 Fuerza la imagen en la parte inferior del canvas
-    drawY = overlayCanvas.height * 0.5; // zona debajo de la cara
+    // 🎯 Posición fija para evitar tapar cara
+    drawY = overlayCanvas.height * 0.55; // más abajo de la mitad
   } else {
-    // Cámara trasera normal
     const shoulderY = ((ls.y + rs.y) / 2) * overlayCanvas.height;
     drawY = shoulderY - imgHeight * 0.3;
   }
