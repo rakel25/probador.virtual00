@@ -6,10 +6,10 @@ function onResults(results) {
 
   if (!results.poseLandmarks) return;
 
-  const ls = results.poseLandmarks[11]; // hombro izq
-  const rs = results.poseLandmarks[12]; // hombro der
-  const lh = results.poseLandmarks[23]; // cadera izq
-  const rh = results.poseLandmarks[24]; // cadera der
+  const ls = results.poseLandmarks[11]; // Hombro izq
+  const rs = results.poseLandmarks[12]; // Hombro der
+  const lh = results.poseLandmarks[23]; // Cadera izq
+  const rh = results.poseLandmarks[24]; // Cadera der
 
   const centerX = (ls.x + rs.x) / 2 * overlayCanvas.width;
 
@@ -22,22 +22,13 @@ function onResults(results) {
   const imgWidth = shoulderWidth * 1.8;
   const imgHeight = torsoHeight * 1.8;
 
-  let drawY;
+  let drawX = centerX - imgWidth / 2;
+  let drawY = shoulderY - imgHeight * 0.3;
 
   if (usingFrontCamera) {
-    // 🟢 Frontal: divide pantalla. Dibuja prenda en mitad inferior
-    const midScreen = overlayCanvas.height / 2;
-    drawY = midScreen; // empezar desde mitad hacia abajo
-  } else {
-    // 🟡 Trasera: mantenemos como estaba
-    drawY = shoulderY - imgHeight * 0.3;
+    // 📸 En cámara frontal: forzamos la prenda a empezar más abajo (cuello hacia abajo)
+    drawY = shoulderY + imgHeight * 0.05;
   }
 
-  overlayCtx.drawImage(
-    clothingImg,
-    centerX - imgWidth / 2,
-    drawY,
-    imgWidth,
-    imgHeight
-  );
+  overlayCtx.drawImage(clothingImg, drawX, drawY, imgWidth, imgHeight);
 }
