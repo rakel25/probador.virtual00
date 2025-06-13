@@ -21,17 +21,17 @@ let currentIndex = 0;
 let currentStream = null;
 let cameraInstance = null;
 
-// Ya no usamos toggleCameraBtn ni changing cameras, solo frontal
-// let usingFrontCamera = true; // no necesario
+// Eliminar toggleCameraBtn y uso solo cámara frontal
 
 function updatePrenda() {
   const item = prendas[currentIndex];
   clothingName.textContent = item.name;
-  clothingImg.src = `clothes/${item.file}`;
+  clothingImg.src = item.file;  // <-- Cambiar aquí para imágenes en la raíz
 }
 
+// Imagen oculta para usar en canvas overlay
 const clothingImg = new Image();
-clothingImg.src = `clothes/${prendas[0].file}`;
+clothingImg.src = prendas[0].file;
 
 // Navegación prendas
 document.getElementById("prev-btn").onclick = () => {
@@ -74,13 +74,12 @@ function startPose() {
 
   pose.onResults(onResults);
 
-  // Solo cámara frontal
-  const constraints = {
+  let constraints = {
     audio: false,
     video: {
       width: 640,
       height: 480,
-      facingMode: "user"
+      facingMode: "user"  // Solo cámara frontal
     }
   };
 
@@ -93,7 +92,7 @@ function startPose() {
     facingMode: "user"
   });
 
-  if (currentStream) {
+  if(currentStream){
     currentStream.getTracks().forEach(track => track.stop());
   }
   currentStream = camera;
@@ -103,29 +102,39 @@ function startPose() {
 
 function onResults(results) {
   videoCtx.clearRect(0, 0, videoCanvas.width, videoCanvas.height);
+  videoCtx.save();
+  // Espejo para cámara frontal
+  videoCtx.scale(-1, 1);
+  videoCtx.translate(-videoCanvas.width, 0);
   videoCtx.drawImage(results.image, 0, 0, videoCanvas.width, videoCanvas.height);
+  videoCtx.restore();
 
   overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
   if (!results.poseLandmarks) return;
 
-  const ls = results.poseLandmarks[11]; // hombro izq
-  const rs = results.poseLandmarks[12]; // hombro der
-  const lh = results.poseLandmarks[23]; // cadera izq
-  const rh = results.poseLandmarks[24]; // cadera der
+  const ls = results.poseLandmarks[11];
+  const rs = results.poseLandmarks[12];
+  const lh = results.poseLandmarks[23];
+  const rh = results.poseLandmarks[24];
 
+  // Calculamos posición y tamaño de la prenda para que quede justo bajo el cuello
   const centerX = (ls.x + rs.x) / 2 * overlayCanvas.width;
+  const shoulderY = (ls.y + rs.y) / 2 * overlayCanvas.height;
+  const torsoHeight = (lh.y + rh.y) / 2 * overlayCanvas.height - shoulderY;
   const shoulderWidth = Math.abs(ls.x - rs.x) * overlayCanvas.width;
-  const torsoHeight = Math.abs(((lh.y + rh.y) / 2 - (ls.y + rs.y) / 2)) * overlayCanvas.height;
 
   const imgWidth = shoulderWidth * 1.8;
-  const imgHeight = torsoHeight * 2;
+  const imgHeight = torsoHeight * 1.8;
 
-  // Dibujar la prenda justo debajo del cuello
-  const drawX = centerX - imgWidth / 2;
-  const drawY = ((ls.y + rs.y) / 2) * overlayCanvas.height + 20; // un poco debajo del cuello
-
-  overlayCtx.drawImage(clothingImg, drawX, drawY, imgWidth, imgHeight);
+  // Dibujamos la prenda empezando justo bajo los hombros, no sobre la cara
+  overlayCtx.drawImage(
+    clothingImg,
+    centerX - imgWidth / 2,
+    shoulderY,           // Se ajusta para que inicie justo abajo del cuello
+    imgWidth,
+    imgHeight
+  );
 }
 
 // Inicializa prenda y nombre
