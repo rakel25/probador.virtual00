@@ -23,7 +23,7 @@ function onResults(results) {
 
   if (usingFrontCamera) {
     // 🎯 Posición fija para evitar tapar cara
-    drawY = overlayCanvas.height * 0.55; // más abajo de la mitad
+    drawY = overlayCanvas.height * 2.55; // más abajo de la mitad
   } else {
     const shoulderY = ((ls.y + rs.y) / 2) * overlayCanvas.height;
     drawY = shoulderY - imgHeight * 0.3;
