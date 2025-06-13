@@ -22,13 +22,20 @@ function onResults(results) {
   const imgWidth = shoulderWidth * 1.8;
   const imgHeight = torsoHeight * 1.8;
 
-  const offsetY = 0.05 * h; // pequeño desplazamiento hacia abajo para que no tape el cuello
+  // Ajustamos la posición según el tipo de cámara
+  let yPosition;
+  if (usingFrontCamera) {
+    // Cámara frontal: bajamos un poco la prenda para que empiece bajo el cuello
+    yPosition = neckY + 0.05 * h; 
+  } else {
+    // Cámara trasera: mantenemos como estaba antes
+    yPosition = neckY - imgHeight / 3;
+  }
 
-  // 👇 Esta es la única parte modificada: ajustamos Y para que empiece justo bajo el cuello
   overlayCtx.drawImage(
     clothingImg,
     centerX - imgWidth / 2,
-    neckY + offsetY,
+    yPosition,
     imgWidth,
     imgHeight
   );
