@@ -22,13 +22,15 @@ function onResults(results) {
   const imgWidth = shoulderWidth * 1.8;
   const imgHeight = torsoHeight * 1.8;
 
-  let drawX = centerX - imgWidth / 2;
+  // Default: prenda empieza justo encima del pecho
   let drawY = shoulderY - imgHeight * 0.3;
 
+  // En cámara frontal, bajamos más aún la imagen para evitar la cara
   if (usingFrontCamera) {
-    // 📸 En cámara frontal: forzamos la prenda a empezar más abajo (cuello hacia abajo)
-    drawY = shoulderY + imgHeight * 0.05;
+    drawY = shoulderY + imgHeight * 0.1; // 🔥 BAJAMOS MÁS
   }
+
+  const drawX = centerX - imgWidth / 2;
 
   overlayCtx.drawImage(clothingImg, drawX, drawY, imgWidth, imgHeight);
 }
