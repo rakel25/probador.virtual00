@@ -12,7 +12,6 @@ function onResults(results) {
   const rh = results.poseLandmarks[24]; // Cadera der
 
   const centerX = (ls.x + rs.x) / 2 * overlayCanvas.width;
-
   const shoulderY = ((ls.y + rs.y) / 2) * overlayCanvas.height;
   const hipY = ((lh.y + rh.y) / 2) * overlayCanvas.height;
 
@@ -22,12 +21,14 @@ function onResults(results) {
   const imgWidth = shoulderWidth * 1.8;
   const imgHeight = torsoHeight * 1.8;
 
-  // Default: prenda empieza justo encima del pecho
-  let drawY = shoulderY - imgHeight * 0.3;
+  let drawY;
 
-  // En cámara frontal, bajamos más aún la imagen para evitar la cara
   if (usingFrontCamera) {
-    drawY = shoulderY + imgHeight * 0.1; // 🔥 BAJAMOS MÁS
+    // 🔥 Baja la prenda mucho más: debajo del cuello y flechas
+    drawY = overlayCanvas.height * 0.55; // Esto coloca la prenda más abajo
+  } else {
+    // Cámara trasera (no se toca)
+    drawY = shoulderY - imgHeight * 0.3;
   }
 
   const drawX = centerX - imgWidth / 2;
