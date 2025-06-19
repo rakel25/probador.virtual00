@@ -113,31 +113,42 @@ function onResults(results) {
 
   if (!results.poseLandmarks) return;
 
- if (clothingImg.complete && clothingImg.naturalWidth !== 0) {
-  const screenWidth = overlayCanvas.width;
-  const screenHeight = overlayCanvas.height;
+  if (clothingImg.complete && clothingImg.naturalWidth !== 0) {
+    const screenWidth = overlayCanvas.width;
+    const screenHeight = overlayCanvas.height;
 
-  const leftShoulder = results.poseLandmarks[11];
-  const rightShoulder = results.poseLandmarks[12];
-  const leftHip = results.poseLandmarks[23];
-  const rightHip = results.poseLandmarks[24];
+    // Usa landmarks para calcular la altura del torso
+    const leftShoulder = results.poseLandmarks[11];
+    const rightShoulder = results.poseLandmarks[12];
+    const leftHip = results.poseLandmarks[23];
+    const rightHip = results.poseLandmarks[24];
 
-  // Posición media de los hombros (centro torso)
-  const centerX = ((leftShoulder.x + rightShoulder.x) / 2) * screenWidth;
-  const centerY = ((leftShoulder.y + rightShoulder.y) / 2) * screenHeight;
+    // Promedio en pantalla de hombros y caderas
+    const shoulderY = (leftShoulder.y + rightShoulder.y) / 2;
+    const hipY = (leftHip.y + rightHip.y) / 2;
 
-  // Ancho y alto aproximados del torso
-  const torsoWidth = Math.abs(rightShoulder.x - leftShoulder.x) * screenWidth * 1.5; // 1.5 para agrandar más
-  const torsoHeight = Math.abs(leftHip.y - leftShoulder.y) * screenHeight * 1.5;
+    // Altura del torso en coordenadas relativas (0 a 1)
+    let torsoHeightRel = hipY - shoulderY;
 
-  // Ajustar posición para que la prenda quede centrada en el torso
-  const posX = centerX - torsoWidth / 2;
-  const posY = centerY - torsoHeight * 0.15; // un poco más arriba del hombro
+    // Aumentamos la altura un 50% para que sea más grande
+    torsoHeightRel *= 1.5;
 
-  // Dibujar la imagen proporcional al torso
-  overlayCtx.drawImage(clothingImg, posX, posY, torsoWidth, torsoHeight);
+    // Convertir a píxeles
+    const torsoHeightPx = torsoHeightRel * screenHeight;
+
+    // Calculamos el ancho manteniendo proporción de la imagen
+    const imgWidth = torsoHeightPx * (clothingImg.naturalWidth / clothingImg.naturalHeight);
+
+    // Posición X centrada
+    const posX = (screenWidth - imgWidth) / 2;
+
+    // Posición Y basada en el hombro (subiendo un poco para que no quede muy abajo)
+    const posY = shoulderY * screenHeight - torsoHeightPx * 0.1;
+
+    overlayCtx.drawImage(clothingImg, posX, posY, imgWidth, torsoHeightPx);
+  }
 }
-}
+
 
 // Inicializa prenda y nombre
 updatePrenda();
