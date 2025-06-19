@@ -118,24 +118,36 @@ function onResults(results) {
   const lh = results.poseLandmarks[23];
   const rh = results.poseLandmarks[24];
 
-  // Calculamos posición y tamaño de la prenda para que quede justo bajo el cuello
-  const centerX = (ls.x + rs.x) / 2 * overlayCanvas.width;
-  const shoulderY = (ls.y + rs.y) / 2 * overlayCanvas.height;
-  const torsoHeight = (lh.y + rh.y) / 2 * overlayCanvas.height - shoulderY;
-  const shoulderWidth = Math.abs(ls.x - rs.x) * overlayCanvas.width;
+   // Calculamos posición y tamaño de la prenda
+  const centerX = overlayCanvas.width / 2;
+  const isFrontCamera = true; // Siempre frontal en tu caso
 
-  const imgWidth = shoulderWidth * 1.8;
-  const imgHeight = torsoHeight * 1.8;
+  let imgWidth, imgHeight, posX, posY;
 
-  // Dibujamos la prenda empezando justo bajo los hombros, no sobre la cara
-  overlayCtx.drawImage(
-    clothingImg,
-    centerX - imgWidth / 2,
-    shoulderY,           // Se ajusta para que inicie justo abajo del cuello
-    imgWidth,
-    imgHeight
-  );
-}
+  if (isFrontCamera) {
+    // Posicionar en la parte inferior centrada
+    const screenHeight = overlayCanvas.height;
+    const screenWidth = overlayCanvas.width;
+    const baseHeight = screenHeight * 0.35;
+
+    imgHeight = baseHeight;
+    imgWidth = baseHeight * (clothingImg.width / clothingImg.height);
+    posX = (screenWidth - imgWidth) / 2;
+    posY = screenHeight - imgHeight - 40; // 40px de margen inferior
+  } else {
+    // (No se usa, pero mantenido por claridad)
+    const shoulderY = (ls.y + rs.y) / 2 * overlayCanvas.height;
+    const torsoHeight = (lh.y + rh.y) / 2 * overlayCanvas.height - shoulderY;
+    const shoulderWidth = Math.abs(ls.x - rs.x) * overlayCanvas.width;
+
+    imgWidth = shoulderWidth * 1.8;
+    imgHeight = torsoHeight * 1.8;
+    posX = centerX - imgWidth / 2;
+    posY = shoulderY;
+  }
+
+  overlayCtx.drawImage(clothingImg, posX, posY, imgWidth, imgHeight);
+
 
 // Inicializa prenda y nombre
 updatePrenda();
