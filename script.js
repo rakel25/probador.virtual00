@@ -115,19 +115,18 @@ function onResults(results) {
 
   // Solo dibujar si la imagen está cargada y tiene dimensiones válidas
   if (clothingImg.complete && clothingImg.naturalWidth !== 0) {
-    const screenWidth = overlayCanvas.width;
-    const screenHeight = overlayCanvas.height;
+  const screenWidth = overlayCanvas.width;
+  const screenHeight = overlayCanvas.height;
 
-    const imgHeight = screenHeight * 0.5; // más grande
-    const imgWidth = imgHeight * (clothingImg.naturalWidth / clothingImg.naturalHeight);
+  const imgHeight = screenHeight * 0.7; // prenda más grande solo cámara frontal
+  const imgWidth = imgHeight * (clothingImg.naturalWidth / clothingImg.naturalHeight);
 
-    const posX = (screenWidth - imgWidth) / 2;
-    const posY = screenHeight - imgHeight - 20; // 20px desde abajo
+  const posX = (screenWidth - imgWidth) / 2;
+  const posY = screenHeight - imgHeight - 20; // 20px desde abajo
 
-    overlayCtx.drawImage(clothingImg, posX, posY, imgWidth, imgHeight);
-  }
+  overlayCtx.drawImage(clothingImg, posX, posY, imgWidth, imgHeight);
 }
-
+}
 
 // Inicializa prenda y nombre
 updatePrenda();
