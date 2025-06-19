@@ -15,7 +15,7 @@
   }
 
   #splash {
-    background-color: #000; /* opcional por si tarda en cargar la imagen */
+    background-color: #000;
     text-align: center;
     cursor: pointer;
     display: flex;
@@ -86,7 +86,6 @@
   height: auto;
 }
 
-/* Posición */
 #prev-btn {
   left: 10px;
 }
@@ -95,7 +94,6 @@
   right: 10px;
 }
 
-/* Sin efectos hover */
 #prev-btn:hover, #next-btn:hover {
   color: black !important;
   background: none !important;
@@ -103,28 +101,27 @@
   cursor: pointer;
 }
 
+#camera-toggle {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background: transparent;
+  border: 2px solid silver;
+  color: silver;
+  font-size: 1.2rem;
+  padding: 8px 12px;
+  cursor: pointer;
+  box-shadow: 0 0 10px silver;
+  user-select: none;
+  transition: background 0.3s, color 0.3s;
+}
 
-  #camera-toggle {
-    position: absolute;
-    bottom: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    background: transparent;
-    border: 2px solid silver;
-    color: silver;
-    font-size: 1.2rem;
-    padding: 8px 12px;
-    cursor: pointer;
-    box-shadow: 0 0 10px silver;
-    user-select: none;
-    transition: background 0.3s, color 0.3s;
-  }
-
-  #camera-toggle:hover {
-    background: silver;
-    color: #121212;
-  }
+#camera-toggle:hover {
+  background: silver;
+  color: #121212;
+}
 </style>
 </head>
 <body>
@@ -137,13 +134,12 @@
   <canvas id="canvas"></canvas>
   <div id="clothing-info"></div>
   <button id="prev-btn" aria-label="Anterior">◀</button>
-<button id="next-btn" aria-label="Siguiente">▶</button>
-<button id="camera-toggle" title="Cambiar cámara" aria-label="Cambiar cámara">
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="black" viewBox="0 0 24 24">
-    <path d="M20 5h-3.586l-1.707-1.707A.996.996 0 0 0 14 3H10a.996.996 0 0 0-.707.293L7.586 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zM12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
-  </svg>
-</button>
-
+  <button id="next-btn" aria-label="Siguiente">▶</button>
+  <button id="camera-toggle" title="Cambiar cámara" aria-label="Cambiar cámara">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="black" viewBox="0 0 24 24">
+      <path d="M20 5h-3.586l-1.707-1.707A.996.996 0 0 0 14 3H10a.996.996 0 0 0-.707.293L7.586 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zM12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+    </svg>
+  </button>
 </div>
 
 <script>
@@ -201,48 +197,44 @@
   }
 
   function draw() {
-  function draw() {
-  requestAnimationFrame(draw);
+    requestAnimationFrame(draw);
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  if (videoElement.readyState >= 2) {
-    ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-  }
+    if (videoElement.readyState >= 2) {
+      ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+    }
 
-  if (clothingImage.complete && clothingImage.naturalWidth !== 0) {
-    if (usingFrontCamera) {
-      // Cámara frontal: prenda más grande y más abajo
-      const topOffset = 0.4;
-      const bottomOffset = 0.98;
+    if (clothingImage.complete && clothingImage.naturalWidth !== 0) {
+      if (usingFrontCamera) {
+        const topOffset = 0.4;
+        const bottomOffset = 0.98;
 
-      const torsoTop = canvas.height * topOffset;
-      const torsoBottom = canvas.height * bottomOffset;
-      const torsoHeight = torsoBottom - torsoTop;
-      const torsoWidth = torsoHeight * (clothingImage.width / clothingImage.height);
-      const x = (canvas.width - torsoWidth) / 2;
-      const y = torsoTop;
+        const torsoTop = canvas.height * topOffset;
+        const torsoBottom = canvas.height * bottomOffset;
+        const torsoHeight = torsoBottom - torsoTop;
+        const torsoWidth = torsoHeight * (clothingImage.width / clothingImage.height);
+        const x = (canvas.width - torsoWidth) / 2;
+        const y = torsoTop;
 
-      ctx.drawImage(clothingImage, x, y, torsoWidth, torsoHeight);
-      clothingRect = { x, y, width: torsoWidth, height: torsoHeight };
-    } else {
-      // Cámara trasera: prenda en el centro superior
-      const topOffset = 0.3;
-      const bottomOffset = 0.7;
+        ctx.drawImage(clothingImage, x, y, torsoWidth, torsoHeight);
+        clothingRect = { x, y, width: torsoWidth, height: torsoHeight };
+      } else {
+        const topOffset = 0.3;
+        const bottomOffset = 0.7;
 
-      const torsoTop = canvas.height * topOffset;
-      const torsoBottom = canvas.height * bottomOffset;
-      const torsoHeight = torsoBottom - torsoTop;
-      const torsoWidth = torsoHeight * (clothingImage.width / clothingImage.height);
-      const x = (canvas.width - torsoWidth) / 2;
-      const y = torsoTop;
+        const torsoTop = canvas.height * topOffset;
+        const torsoBottom = canvas.height * bottomOffset;
+        const torsoHeight = torsoBottom - torsoTop;
+        const torsoWidth = torsoHeight * (clothingImage.width / clothingImage.height);
+        const x = (canvas.width - torsoWidth) / 2;
+        const y = torsoTop;
 
-      ctx.drawImage(clothingImage, x, y, torsoWidth, torsoHeight);
-      clothingRect = { x, y, width: torsoWidth, height: torsoHeight };
+        ctx.drawImage(clothingImage, x, y, torsoWidth, torsoHeight);
+        clothingRect = { x, y, width: torsoWidth, height: torsoHeight };
+      }
     }
   }
-}
-
 
   function loadClothing(index) {
     clothingImage.src = clothes[index].src;
