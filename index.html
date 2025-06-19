@@ -215,8 +215,10 @@
 
       if (clothingImage.complete && clothingImage.naturalWidth !== 0) {
         const isFront = usingFrontCamera;
-        const topOffset = isFront ? 0.2 : 0.3;
-        const bottomOffset = isFront ? 0.6 : 0.7;
+
+        // AJUSTE AQUÍ PARA DIBUJAR MÁS ABAJO
+        const topOffset = 0.8;    // 80% hacia abajo
+        const bottomOffset = 0.95; // 95% hacia abajo
 
         const torsoTop = canvas.height * topOffset;
         const torsoBottom = canvas.height * bottomOffset;
@@ -281,6 +283,8 @@
       }, 5000);
     }
   });
+</script>
+
 </script>
 
 </body>
