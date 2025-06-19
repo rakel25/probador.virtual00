@@ -1,58 +1,32 @@
-/* Botones prev y next como triángulos negros */
 #prev-btn, #next-btn {
-  background: transparent;
+  background: none;
   border: none;
-  width: 0;
-  height: 0;
+  color: black;
+  font-size: 2.5rem;
   padding: 0;
   cursor: pointer;
+  user-select: none;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  user-select: none;
   z-index: 10;
-  color: transparent; /* Oculta el texto (flecha dentro del botón) */
+  width: auto;
+  height: auto;
 }
 
-/* Triángulo izquierdo */
+/* Posición */
 #prev-btn {
   left: 10px;
-  border-top: 20px solid transparent;
-  border-bottom: 20px solid transparent;
-  border-right: 30px solid black;
 }
 
-/* Triángulo derecho */
 #next-btn {
   right: 10px;
-  border-top: 20px solid transparent;
-  border-bottom: 20px solid transparent;
-  border-left: 30px solid black;
 }
 
+/* Sin efectos hover */
 #prev-btn:hover, #next-btn:hover {
-  opacity: 0.8;
-}
-
-/* Botón cambiar cámara como icono SVG sin recuadro */
-#camera-toggle {
-  position: absolute;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  color: black;
-}
-
-#camera-toggle:hover {
-  color: #333; /* efecto al pasar el mouse */
+  color: black; /* No cambia el color */
+  background: none; /* Sin fondo */
+  border: none; /* Sin borde */
+  cursor: pointer; /* Sólo el cursor */
 }
