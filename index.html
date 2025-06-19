@@ -70,29 +70,39 @@
     max-width: 90vw;
   }
 
-  #prev-btn, #next-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: 2px solid silver;
-    color: silver;
-    font-size: 1.8rem;
-    padding: 15px 20px;
-    cursor: pointer;
-    box-shadow: 0 0 10px silver;
-    user-select: none;
-    transition: background 0.3s, color 0.3s;
-    z-index: 10;
-  }
+ #prev-btn, #next-btn {
+  background: none !important;
+  border: none !important;
+  color: black !important;
+  font-size: 2.5rem;
+  padding: 0;
+  cursor: pointer;
+  user-select: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: auto;
+  height: auto;
+}
 
-  #prev-btn:hover, #next-btn:hover {
-    background: silver;
-    color: #121212;
-  }
+/* Posición */
+#prev-btn {
+  left: 10px;
+}
 
-  #prev-btn { left: 10px; }
-  #next-btn { right: 10px; }
+#next-btn {
+  right: 10px;
+}
+
+/* Sin efectos hover */
+#prev-btn:hover, #next-btn:hover {
+  color: black !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer;
+}
+
 
   #camera-toggle {
     position: absolute;
