@@ -197,44 +197,36 @@
   }
 
   function draw() {
-    requestAnimationFrame(draw);
+  requestAnimationFrame(draw);
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (videoElement.readyState >= 2) {
+  if (videoElement.readyState >= 2) {
+    if (usingFrontCamera) {
+      ctx.save();
+      ctx.scale(-1, 1);
+      ctx.drawImage(videoElement, -canvas.width, 0, canvas.width, canvas.height);
+      ctx.restore();
+    } else {
       ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
     }
-
-    if (clothingImage.complete && clothingImage.naturalWidth !== 0) {
-      if (usingFrontCamera) {
-        const topOffset = 0.4;
-        const bottomOffset = 0.98;
-
-        const torsoTop = canvas.height * topOffset;
-        const torsoBottom = canvas.height * bottomOffset;
-        const torsoHeight = torsoBottom - torsoTop;
-        const torsoWidth = torsoHeight * (clothingImage.width / clothingImage.height);
-        const x = (canvas.width - torsoWidth) / 2;
-        const y = torsoTop;
-
-        ctx.drawImage(clothingImage, x, y, torsoWidth, torsoHeight);
-        clothingRect = { x, y, width: torsoWidth, height: torsoHeight };
-      } else {
-        const topOffset = 0.3;
-        const bottomOffset = 0.7;
-
-        const torsoTop = canvas.height * topOffset;
-        const torsoBottom = canvas.height * bottomOffset;
-        const torsoHeight = torsoBottom - torsoTop;
-        const torsoWidth = torsoHeight * (clothingImage.width / clothingImage.height);
-        const x = (canvas.width - torsoWidth) / 2;
-        const y = torsoTop;
-
-        ctx.drawImage(clothingImage, x, y, torsoWidth, torsoHeight);
-        clothingRect = { x, y, width: torsoWidth, height: torsoHeight };
-      }
-    }
   }
+
+  if (clothingImage.complete && clothingImage.naturalWidth !== 0) {
+    const topOffset = usingFrontCamera ? 0.4 : 0.3;
+    const bottomOffset = usingFrontCamera ? 0.98 : 0.7;
+
+    const torsoTop = canvas.height * topOffset;
+    const torsoBottom = canvas.height * bottomOffset;
+    const torsoHeight = torsoBottom - torsoTop;
+    const torsoWidth = torsoHeight * (clothingImage.width / clothingImage.height);
+    const x = (canvas.width - torsoWidth) / 2;
+    const y = torsoTop;
+
+    ctx.drawImage(clothingImage, x, y, torsoWidth, torsoHeight);
+    clothingRect = { x, y, width: torsoWidth, height: torsoHeight };
+  }
+}
 
   function loadClothing(index) {
     clothingImage.src = clothes[index].src;
