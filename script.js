@@ -131,7 +131,7 @@ function onResults(results) {
     let torsoHeightRel = hipY - shoulderY;
 
     // Aumentamos la altura un 50% para que sea más grande
-    torsoHeightRel *= 1.5;
+    torsoHeightRel *= 5;
 
     // Convertir a píxeles
     const torsoHeightPx = torsoHeightRel * screenHeight;
