@@ -11,6 +11,7 @@
   transform: translateY(-50%);
   user-select: none;
   z-index: 10;
+  color: transparent; /* Oculta el texto (flecha dentro del botón) */
 }
 
 /* Triángulo izquierdo */
@@ -32,7 +33,6 @@
 #prev-btn:hover, #next-btn:hover {
   opacity: 0.8;
 }
-
 
 /* Botón cambiar cámara como icono SVG sin recuadro */
 #camera-toggle {
