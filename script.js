@@ -113,17 +113,19 @@ function onResults(results) {
 
   if (!results.poseLandmarks) return;
 
-  // Centrar imagen en parte inferior de la pantalla
-  const screenWidth = overlayCanvas.width;
-  const screenHeight = overlayCanvas.height;
+  // Solo dibujar si la imagen está cargada y tiene dimensiones válidas
+  if (clothingImg.complete && clothingImg.naturalWidth !== 0) {
+    const screenWidth = overlayCanvas.width;
+    const screenHeight = overlayCanvas.height;
 
-  const imgHeight = screenHeight * 0.5; // más grande (ajustable)
-  const imgWidth = imgHeight * (clothingImg.width / clothingImg.height);
+    const imgHeight = screenHeight * 0.5; // más grande
+    const imgWidth = imgHeight * (clothingImg.naturalWidth / clothingImg.naturalHeight);
 
-  const posX = (screenWidth - imgWidth) / 2;
-  const posY = screenHeight - imgHeight - 20; // 20px desde abajo
+    const posX = (screenWidth - imgWidth) / 2;
+    const posY = screenHeight - imgHeight - 20; // 20px desde abajo
 
-  overlayCtx.drawImage(clothingImg, posX, posY, imgWidth, imgHeight);
+    overlayCtx.drawImage(clothingImg, posX, posY, imgWidth, imgHeight);
+  }
 }
 
 
