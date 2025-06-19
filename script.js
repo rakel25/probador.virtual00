@@ -118,33 +118,14 @@ function onResults(results) {
   const lh = results.poseLandmarks[23];
   const rh = results.poseLandmarks[24];
 
-   // Calculamos posición y tamaño de la prenda
-  const centerX = overlayCanvas.width / 2;
-  const isFrontCamera = true; // Siempre frontal en tu caso
+     const screenWidth = overlayCanvas.width;
+  const screenHeight = overlayCanvas.height;
 
-  let imgWidth, imgHeight, posX, posY;
-
-  if (isFrontCamera) {
-    // Posicionar en la parte inferior centrada
-    const screenHeight = overlayCanvas.height;
-    const screenWidth = overlayCanvas.width;
-    const baseHeight = screenHeight * 0.35;
-
-    imgHeight = baseHeight;
-    imgWidth = baseHeight * (clothingImg.width / clothingImg.height);
-    posX = (screenWidth - imgWidth) / 2;
-    posY = screenHeight - imgHeight - 40; // 40px de margen inferior
-  } else {
-    // (No se usa, pero mantenido por claridad)
-    const shoulderY = (ls.y + rs.y) / 2 * overlayCanvas.height;
-    const torsoHeight = (lh.y + rh.y) / 2 * overlayCanvas.height - shoulderY;
-    const shoulderWidth = Math.abs(ls.x - rs.x) * overlayCanvas.width;
-
-    imgWidth = shoulderWidth * 1.8;
-    imgHeight = torsoHeight * 1.8;
-    posX = centerX - imgWidth / 2;
-    posY = shoulderY;
-  }
+  // Solo frontal: centrado y en parte inferior
+  const imgHeight = screenHeight * 0.5; // más grande
+  const imgWidth = imgHeight * (clothingImg.width / clothingImg.height);
+  const posX = (screenWidth - imgWidth) / 2;
+  const posY = screenHeight - imgHeight - 20; // 20px desde abajo
 
   overlayCtx.drawImage(clothingImg, posX, posY, imgWidth, imgHeight);
 
