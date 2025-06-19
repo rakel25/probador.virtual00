@@ -118,7 +118,7 @@ function onResults(results) {
   const screenWidth = overlayCanvas.width;
   const screenHeight = overlayCanvas.height;
 
-  const imgHeight = screenHeight * 0.7; // prenda más grande solo cámara frontal
+  const imgHeight = screenHeight * 0.85; // MAS GRANDE que antes solo cámara frontal
   const imgWidth = imgHeight * (clothingImg.naturalWidth / clothingImg.naturalHeight);
 
   const posX = (screenWidth - imgWidth) / 2;
