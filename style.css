@@ -54,71 +54,53 @@ body {
   background-color: black;
 }
 
+/* Botones de navegación prendas */
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: black;
+  font-size: 2.5rem;
+  cursor: pointer;
+  z-index: 10;
+  user-select: none;
+  padding: 0;
+  border-radius: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-btn:hover {
+  background: none;
+}
+
 /* Botón cambiar cámara */
 #toggle-camera-btn {
   position: absolute;
   top: 15px;
   right: 15px;
   z-index: 20;
-  background-color: rgba(0,0,0,0.6);
-  border: 1.5px solid silver;
-  border-radius: 8px;
-  padding: 8px 12px;
-  color: silver;
+  background: none;
+  border: none;
+  padding: 0;
   cursor: pointer;
-  font-size: 14px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
 }
 
 #toggle-camera-btn:hover {
-  background-color: rgba(255,255,255,0.1);
+  background: none;
 }
 
-/* Video y canvases */
-video, canvas {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-}
-
-#video-canvas {
-  z-index: 1;
-}
-
-#overlay-canvas {
-  z-index: 2;
-  pointer-events: none;
-}
-
-/* Botones de navegación prendas */
-.nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(0,0,0,0.4);
-  border: none;
-  color: white;
-  font-size: 2.5rem;
-  cursor: pointer;
-  z-index: 10;
-  user-select: none;
-  padding: 10px 20px;
-  border-radius: 50%;
-  transition: background-color 0.3s;
-}
-
-.nav-btn:hover {
-  background-color: rgba(255,255,255,0.2);
-}
-
-.nav-btn.left {
-  left: 10px;
-}
-
-.nav-btn.right {
-  right: 10px;
-}
 
 /* Nombre de la prenda debajo, centrado */
 #clothing-name {
