@@ -113,21 +113,18 @@ function onResults(results) {
 
   if (!results.poseLandmarks) return;
 
-  const ls = results.poseLandmarks[11];
-  const rs = results.poseLandmarks[12];
-  const lh = results.poseLandmarks[23];
-  const rh = results.poseLandmarks[24];
-
-     const screenWidth = overlayCanvas.width;
+  // Centrar imagen en parte inferior de la pantalla
+  const screenWidth = overlayCanvas.width;
   const screenHeight = overlayCanvas.height;
 
-  // Solo frontal: centrado y en parte inferior
-  const imgHeight = screenHeight * 0.5; // más grande
+  const imgHeight = screenHeight * 0.5; // más grande (ajustable)
   const imgWidth = imgHeight * (clothingImg.width / clothingImg.height);
+
   const posX = (screenWidth - imgWidth) / 2;
   const posY = screenHeight - imgHeight - 20; // 20px desde abajo
 
   overlayCtx.drawImage(clothingImg, posX, posY, imgWidth, imgHeight);
+}
 
 
 // Inicializa prenda y nombre
