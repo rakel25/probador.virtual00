@@ -54,6 +54,46 @@ body {
   background-color: black;
 }
 
+/* Botón cambiar cámara */
+#toggle-camera-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 20;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+}
+
+#toggle-camera-btn:hover {
+  background: none;
+}
+
+/* Video y canvases */
+video, canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+}
+
+#video-canvas {
+  z-index: 1;
+}
+
+#overlay-canvas {
+  z-index: 2;
+  pointer-events: none;
+}
+
 /* Botones de navegación prendas */
 .nav-btn {
   position: absolute;
@@ -79,28 +119,13 @@ body {
   background: none;
 }
 
-/* Botón cambiar cámara */
-#toggle-camera-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  z-index: 20;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: black;
+.nav-btn.left {
+  left: 10px;
 }
 
-#toggle-camera-btn:hover {
-  background: none;
+.nav-btn.right {
+  right: 10px;
 }
-
 
 /* Nombre de la prenda debajo, centrado */
 #clothing-name {
