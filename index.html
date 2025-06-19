@@ -201,53 +201,53 @@
   }
 
   function draw() {
-    requestAnimationFrame(draw);
-    if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
-      ctx.save();
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  requestAnimationFrame(draw);
+  if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+    ctx.save();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      if (usingFrontCamera) {
-        ctx.translate(canvas.width, 0);
-        ctx.scale(-1, 1);
-      }
-
-      ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-      if (clothingImage.complete && clothingImage.naturalWidth !== 0) {
-        if (usingFrontCamera) {
-          // Cámara frontal: prenda más grande y más abajo
-          const topOffset = 0.8;
-          const bottomOffset = 0.95;
-
-          const torsoTop = canvas.height * topOffset;
-          const torsoBottom = canvas.height * bottomOffset;
-          const torsoHeight = torsoBottom - torsoTop;
-          const torsoWidth = torsoHeight * (clothingImage.width / clothingImage.height);
-          const x = (canvas.width - torsoWidth) / 2;
-          const y = torsoTop;
-
-          ctx.drawImage(clothingImage, x, y, torsoWidth, torsoHeight);
-          clothingRect = { x, y, width: torsoWidth, height: torsoHeight };
-        } else {
-          // Cámara trasera: mantiene posición y tamaño original
-          const topOffset = 0.2;
-          const bottomOffset = 0.7;
-
-          const torsoTop = canvas.height * topOffset;
-          const torsoBottom = canvas.height * bottomOffset;
-          const torsoHeight = torsoBottom - torsoTop;
-          const torsoWidth = torsoHeight * (clothingImage.width / clothingImage.height);
-          const x = (canvas.width - torsoWidth) / 2;
-          const y = torsoTop;
-
-          ctx.drawImage(clothingImage, x, y, torsoWidth, torsoHeight);
-          clothingRect = { x, y, width: torsoWidth, height: torsoHeight };
-        }
-      }
-
-      ctx.restore();
+    if (usingFrontCamera) {
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
     }
+
+    ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+    if (clothingImage.complete && clothingImage.naturalWidth !== 0) {
+      if (usingFrontCamera) {
+        // Cámara frontal: prenda más grande y más abajo
+        const topOffset = 0.7;
+        const bottomOffset = 0.98;
+
+        const torsoTop = canvas.height * topOffset;
+        const torsoBottom = canvas.height * bottomOffset;
+        const torsoHeight = torsoBottom - torsoTop;
+        const torsoWidth = torsoHeight * (clothingImage.width / clothingImage.height);
+        const x = (canvas.width - torsoWidth) / 2;
+        const y = torsoTop;
+
+        ctx.drawImage(clothingImage, x, y, torsoWidth, torsoHeight);
+        clothingRect = { x, y, width: torsoWidth, height: torsoHeight };
+      } else {
+        // Cámara trasera: prenda normal como estaba antes
+        const topOffset = 0.3;
+        const bottomOffset = 0.7;
+
+        const torsoTop = canvas.height * topOffset;
+        const torsoBottom = canvas.height * bottomOffset;
+        const torsoHeight = torsoBottom - torsoTop;
+        const torsoWidth = torsoHeight * (clothingImage.width / clothingImage.height);
+        const x = (canvas.width - torsoWidth) / 2;
+        const y = torsoTop;
+
+        ctx.drawImage(clothingImage, x, y, torsoWidth, torsoHeight);
+        clothingRect = { x, y, width: torsoWidth, height: torsoHeight };
+      }
+    }
+
+    ctx.restore();
   }
+}
 
   function loadClothing(index) {
     clothingImage.src = clothes[index].src;
