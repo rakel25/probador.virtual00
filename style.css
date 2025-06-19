@@ -1,113 +1,13 @@
-body {
-  margin: 0;
-  overflow: hidden;
-  font-family: 'Arial', sans-serif;
-  background-color: #000;
-  color: white;
-  user-select: none;
-}
-
-#splash-screen {
-  position: fixed;
-  inset: 0;
-  background-color: black;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-  text-align: center;
-}
-
-#splash-title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: silver;
-  text-shadow: 2px 2px 5px #aaa, 0 0 10px white;
-  margin-bottom: 20px;
-}
-
-#splash-logo {
-  width: 250px;
-  margin-bottom: 20px;
-}
-
-#enter-btn {
-  padding: 10px 20px;
-  font-size: 18px;
-  cursor: pointer;
-  background-color: #333;
-  color: white;
-  border: 2px solid silver;
-  border-radius: 10px;
-  transition: background-color 0.3s;
-}
-
-#enter-btn:hover {
-  background-color: #555;
-}
-
-#fitting-room {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  background-color: black;
-}
-
-/* Botón cambiar cámara */
-#toggle-camera-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  z-index: 20;
+/* Botones prev y next modificados para ser solo flechas negras sin recuadro */
+#prev-btn, #next-btn {
   background: none;
   border: none;
+  color: black;
+  font-size: 2.5rem;
   padding: 0;
   cursor: pointer;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: black;
-}
-
-#toggle-camera-btn:hover {
-  background: none;
-}
-
-/* Video y canvases */
-video, canvas {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-}
-
-#video-canvas {
-  z-index: 1;
-}
-
-#overlay-canvas {
-  z-index: 2;
-  pointer-events: none;
-}
-
-/* Botones de navegación prendas */
-.nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: black;
-  font-size: 2.5rem;
-  cursor: pointer;
+  user-select: none;
   z-index: 10;
-  user-select: none;
-  padding: 0;
-  border-radius: 0;
   width: 2.5rem;
   height: 2.5rem;
   display: flex;
@@ -115,27 +15,32 @@ video, canvas {
   justify-content: center;
 }
 
-.nav-btn:hover {
-  background: none;
+#prev-btn { left: 10px; position: absolute; top: 50%; transform: translateY(-50%); }
+#next-btn { right: 10px; position: absolute; top: 50%; transform: translateY(-50%); }
+
+#prev-btn:hover, #next-btn:hover {
+  color: #333; /* efecto al pasar el mouse */
 }
 
-.nav-btn.left {
-  left: 10px;
-}
-
-.nav-btn.right {
-  right: 10px;
-}
-
-/* Nombre de la prenda debajo, centrado */
-#clothing-name {
+/* Botón cambiar cámara como icono SVG sin recuadro */
+#camera-toggle {
   position: absolute;
-  bottom: 20px;
-  width: 100%;
-  text-align: center;
-  font-size: 2rem;
-  color: silver;
-  text-shadow: 2px 2px 8px #aaa;
-  font-weight: bold;
-  user-select: none;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  color: black;
+}
+
+#camera-toggle:hover {
+  color: #333; /* efecto al pasar el mouse */
 }
